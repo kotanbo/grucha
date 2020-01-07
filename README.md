@@ -1,6 +1,6 @@
 # grucha
 
-> グルチャ
+> 登録不要なグループチャット
 
 ## Build Setup
 

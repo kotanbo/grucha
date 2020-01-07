@@ -1,17 +1,13 @@
-import { Configuration } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 
-const title = 'グルチャ'
-
-const nuxtConfig: Configuration = {
+export default {
   mode: 'spa',
-  srcDir: 'app',
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + title,
-    title: title,
+    titleTemplate: '%s - ' + process.env.npm_package_name,
+    title: process.env.npm_package_name || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -34,22 +30,24 @@ const nuxtConfig: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/ExStore'],
-  typescript: {
-    typeCheck: true,
-    ignoreNotFoundWarnings: true
-  },
+  plugins: [],
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxtjs/vuetify', '@nuxt/typescript-build'],
+  buildModules: [
+    // Doc: https://github.com/nuxt-community/eslint-module
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/vuetify'
+  ],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    // Doc: https://github.com/nuxt-community/dotenv-module
+    '@nuxtjs/dotenv'
   ],
   /*
    ** Axios module configuration
@@ -80,20 +78,10 @@ const nuxtConfig: Configuration = {
   /*
    ** Build configuration
    */
-  env: {
-    TITLE: title,
-    AUTHOR_NAME: process.env.npm_package_author_name || ''
-  },
   build: {
     /*
      ** You can extend webpack config here
      */
-    extend(config, { isClient, isDev }): void {
-      if (isClient && isDev) {
-        config.devtool = '#source-map'
-      }
-    }
+    extend(config, ctx) {}
   }
 }
-
-module.exports = nuxtConfig

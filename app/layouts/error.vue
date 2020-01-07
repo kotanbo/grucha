@@ -1,14 +1,8 @@
 <template>
   <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
+    <h1>
+      {{ errorMessage }}
     </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
   </v-app>
 </template>
 
@@ -24,15 +18,19 @@ export default class extends Vue {
   private error!: NuxtError
 
   private head(): object {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+    const title = this.errorMessage
     return {
       title
     }
   }
 
-  private pageNotFound = '404 Not Found'
-  private otherError = 'An error occurred'
+  private getErrorMessage(): string {
+    return this.error.statusCode === 404
+      ? 'ページが見つかりませんでした。'
+      : 'エラーが発生しました。'
+  }
+
+  private errorMessage = this.getErrorMessage()
 }
 </script>
 

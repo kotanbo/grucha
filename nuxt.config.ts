@@ -1,6 +1,8 @@
 import { Configuration } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 
+const title = 'グルチャ'
+
 const nuxtConfig: Configuration = {
   mode: 'spa',
   srcDir: 'app',
@@ -8,8 +10,8 @@ const nuxtConfig: Configuration = {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s - ' + title,
+    title: title,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -32,7 +34,7 @@ const nuxtConfig: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/ExStore'],
   typescript: {
     typeCheck: true,
     ignoreNotFoundWarnings: true
@@ -78,6 +80,10 @@ const nuxtConfig: Configuration = {
   /*
    ** Build configuration
    */
+  env: {
+    TITLE: title,
+    AUTHOR_NAME: process.env.npm_package_author_name || ''
+  },
   build: {
     /*
      ** You can extend webpack config here

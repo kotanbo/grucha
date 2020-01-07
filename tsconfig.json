@@ -13,12 +13,18 @@
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
-    "baseUrl": "app",
+    "baseUrl": ".",
     "paths": {
       "~/*": [
-        "*"
+        "app/*"
       ],
       "@/*": [
+        "app/*"
+      ],
+      "~~/*": [
+        "*"
+      ],
+      "@@/*": [
         "*"
       ]
     },
@@ -31,6 +37,8 @@
     "experimentalDecorators": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".nuxt",
+    "dist"
   ]
 }

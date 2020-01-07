@@ -1,6 +1,7 @@
+import { Configuration } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 
-export default {
+const config: Configuration = {
   mode: 'spa',
   /*
    ** Headers of the page
@@ -37,7 +38,8 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxt/typescript-build'
   ],
   /*
    ** Nuxt.js modules
@@ -85,3 +87,5 @@ export default {
     extend(config, ctx) {}
   }
 }
+
+export default config

@@ -1,7 +1,6 @@
-import { Configuration } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 
-const config: Configuration = {
+export default {
   mode: 'spa',
   /*
    ** Headers of the page
@@ -35,21 +34,13 @@ const config: Configuration = {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify',
-    '@nuxt/typescript-build'
-  ],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    '@nuxtjs/axios'
   ],
   /*
    ** Axios module configuration
@@ -87,5 +78,3 @@ const config: Configuration = {
     extend(config, ctx) {}
   }
 }
-
-export default config

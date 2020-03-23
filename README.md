@@ -1,10 +1,10 @@
 # grucha
 
-> 登録不要なグループチャット
+> オープングループチャット
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 $ yarn install
 

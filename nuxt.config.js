@@ -1,5 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
 
+const appTitle = 'グルチャ'
 export default {
   mode: 'spa',
   srcDir: 'app',
@@ -7,8 +8,8 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s - ' + appTitle,
+    title: appTitle,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -31,7 +32,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/firebase', '~/plugins/ex-store'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -72,10 +73,32 @@ export default {
   /*
    ** Build configuration
    */
+  env: {
+    APP_TITLE: appTitle,
+    AUTHOR_NAME: process.env.npm_package_author_name || '',
+    // Firebase設定
+    FIREBASE_API_KEY: 'AIzaSyA9nZbzsGCx1GFyXNr2G0g-s5UdBzm4f4c',
+    FIREBASE_AUTH_DOMAIN: 'grucha-1c551.firebaseapp.com',
+    FIREBASE_DATABASE_URL: 'https://grucha-1c551.firebaseio.com',
+    FIREBASE_PROJECT_ID: 'grucha-1c551',
+    FIREBASE_STORAGE_BUCKET: 'grucha-1c551.appspot.com',
+    FIREBASE_MESSAGING_SENDER_ID: '771495923261',
+    FIREBASE_APP_ID: '1:771495923261:web:873c89b3b4ab7708d72454',
+    FIREBASE_MEASUREMENT_ID: 'G-1Y291C14W8'
+  },
   build: {
-    /*
-     ** You can extend webpack config here
-     */
-    extend(config, ctx) {}
+    babel: {
+      presets({ isServer }) {
+        return [
+          [
+            require.resolve('@nuxt/babel-preset-app'),
+            {
+              buildTarget: isServer ? 'server' : 'client',
+              corejs: { version: 3 }
+            }
+          ]
+        ]
+      }
+    }
   }
 }

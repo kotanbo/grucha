@@ -1,9 +1,9 @@
 <template>
-  <v-list>
-    <v-list-item-group :mandatory="true">
+  <div>
+    <v-list>
       <v-list-item @click="dialog = !dialog">
         <v-list-item-action>
-          <v-icon>mdi-plus-circle</v-icon>
+          <v-icon>mdi-comment</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>
@@ -11,18 +11,20 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-divider></v-divider>
       <v-list-item v-for="(comment, index) in comments" :key="index">
         <v-list-item-content>
           <v-list-item-title style="white-space: pre-wrap;" v-text="comment" />
         </v-list-item-content>
       </v-list-item>
-    </v-list-item-group>
-    <v-dialog v-model="dialog" max-width="500px">
+    </v-list>
+    <v-dialog v-model="dialog" max-width="500px" @submit.prevent>
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-card-text>
             <v-textarea
               v-model="inputedRoomComment"
+              :autofocus="true"
               :counter="maxLengthRoomComment"
               :rules="roomCommentRules"
               label="コメント"
@@ -37,13 +39,14 @@
                 dialog = false
                 addRoomComment(inputedRoomComment)
               "
-              >登録</v-btn
             >
+              登録
+            </v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
-  </v-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -78,7 +81,8 @@ export default Vue.extend({
       if (!room || !room.id) {
         return
       }
-      this.$exStore.dispatch('rooms/addRoomComment', { id: room.id, comment })
+      this.$exStore.dispatch('rooms/addRoomComment', { room, comment })
+      this.$data.inputedRoomComment = ''
     }
   }
 })

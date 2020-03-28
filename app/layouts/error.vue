@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       pageNotFound: 'ページが見つかりませんでした。',
-      otherError: 'エラーが発生しました。'
+      otherError: 'エラーが発生しました。画面を更新してください。'
     }
   },
   head() {

@@ -1,9 +1,9 @@
 <template>
-  <v-list>
-    <v-list-item-group :mandatory="true">
+  <div>
+    <v-list>
       <v-list-item @click="dialog = !dialog">
         <v-list-item-action>
-          <v-icon>mdi-plus-circle</v-icon>
+          <v-icon>mdi-account-multiple</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>
@@ -11,18 +11,38 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item v-for="(room, index) in rooms" :key="index">
-        <v-list-item-content @click="selectRoom(room)">
-          <v-list-item-title v-text="room.name" />
+      <v-list-item>
+        <v-list-item-action>
+          <v-icon>mdi-magnify</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-text-field
+            v-model="searchText"
+            placeholder="ルーム検索"
+          ></v-text-field>
         </v-list-item-content>
       </v-list-item>
-    </v-list-item-group>
+      <v-divider></v-divider>
+      <v-list-item-group :mandatory="true">
+        <v-list-item
+          v-for="(room, index) in rooms"
+          :key="index"
+          :inactive="inactive"
+          @click="inactive = false"
+        >
+          <v-list-item-content @click="selectRoom(room)">
+            <v-list-item-title v-text="room.name" />
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent>
           <v-card-text>
             <v-text-field
               v-model="inputedRoomName"
+              :autofocus="true"
               :counter="maxLengthRoomName"
               :rules="roomNameRules"
               label="名称"
@@ -37,13 +57,14 @@
                 dialog = false
                 createRoom(inputedRoomName)
               "
-              >登録</v-btn
             >
+              登録
+            </v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
-  </v-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -54,6 +75,8 @@ const MAX_LENGTH_ROOM_NAME = 50
 export default Vue.extend({
   data() {
     return {
+      searchText: '',
+      inactive: true,
       dialog: false,
       valid: true,
       inputedRoomName: '',
@@ -69,7 +92,10 @@ export default Vue.extend({
   computed: {
     rooms() {
       const rooms = this.$exStore.getters['rooms/rooms']
-      // const rooms: Array<Room> = []
+      const searchText = this.$data.searchText
+      if (searchText.length) {
+        return rooms.filter((v) => v.name.includes(searchText))
+      }
       return rooms
     }
   },
@@ -83,6 +109,7 @@ export default Vue.extend({
     },
     createRoom(roomName: string) {
       this.$exStore.dispatch('rooms/createRoom', { name: roomName })
+      this.$data.inputedRoomName = ''
     }
   }
 })

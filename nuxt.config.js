@@ -9,7 +9,7 @@ export default {
    */
   head: {
     titleTemplate: '%s - ' + appTitle,
-    title: appTitle,
+    title: '登録不要のオープンなグループチャット',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

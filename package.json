@@ -1,7 +1,7 @@
 {
   "name": "grucha",
   "version": "1.0.0",
-  "description": "オープングループチャット",
+  "description": "登録不要のオープンなグループチャット",
   "author": "kotanbo",
   "private": true,
   "scripts": {

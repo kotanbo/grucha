@@ -1,6 +1,18 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 
+declare module 'vue/types/vue' {
+  interface Vue {
+    $firebase: firebase.app.App
+    $firestore: firebase.firestore.Firestore
+  }
+}
+declare module '@nuxt/types' {
+  interface NuxtAppOptions {
+    $firebase: firebase.app.App
+    $firestore: firebase.firestore.Firestore
+  }
+}
 declare module 'vuex/types/index' {
   interface Store<S> {
     $firebase: firebase.app.App

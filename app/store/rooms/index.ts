@@ -67,6 +67,13 @@ export const actions: Actions<S, A, G, M> = {
     return ctx.state.rooms
   },
   selectRoom(ctx, payload) {
+    if (payload.room && payload.room.id) {
+      const ref = this.$firestore
+        .collection('rooms')
+        .doc(payload.room.id)
+        .collection('posts')
+      this.dispatch('rooms/posts/setPostsRef', { ref })
+    }
     ctx.commit('selectRoom', { room: payload.room })
   },
   async createRoom(ctx, payload) {
@@ -90,12 +97,14 @@ export const actions: Actions<S, A, G, M> = {
     ctx.commit('unshiftRoom', { room })
   },
   async addRoomComment(ctx, payload) {
-    const room = ctx.state.rooms.find((room) => room.id === payload.id)
-    if (!room || !room.id) {
+    if (!payload.room || !payload.room.id) {
       return
     }
-    const comments = [...room.comments, payload.comment]
-    const updatedRoom = cloneDeep<Room>(room)
+    const comments = [...payload.room.comments, payload.comment]
+    const room = cloneDeep<Room>(payload.room)
+    if (!room.id) {
+      return
+    }
     await this.$firestore
       .collection('rooms')
       .doc(room.id)
@@ -103,8 +112,8 @@ export const actions: Actions<S, A, G, M> = {
         comments
       })
       .then((docRef) => {
-        updatedRoom.comments = comments
+        room.comments = comments
       })
-    ctx.commit('setRoom', { room: updatedRoom })
+    ctx.commit('setRoom', { room })
   }
 }

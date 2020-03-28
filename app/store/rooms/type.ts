@@ -1,8 +1,8 @@
 export interface Room {
   id: string | null
   name: string
-  comments: Array<string>
-  createdAt: Object
+  comments: string[]
+  createdAt: {}
 }
 
 export interface S {
@@ -13,7 +13,7 @@ export interface S {
 export interface G {
   rooms: Room[]
   selectedRoom: Room | null
-  selectedRoomComments: Array<string> | undefined
+  selectedRoomComments: string[] | undefined
 }
 export interface RG {
   'rooms/rooms': G['rooms']
@@ -40,7 +40,7 @@ export interface A {
   fetchRooms: {}
   selectRoom: { room: Room }
   createRoom: { name: string }
-  addRoomComment: { id: string; comment: string }
+  addRoomComment: { room: Room; comment: string }
 }
 export interface RA {
   'rooms/fetchRooms': A['fetchRooms']

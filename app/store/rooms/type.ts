@@ -3,11 +3,13 @@ export interface Room {
   name: string
   comments: string[]
   createdAt: {}
+  bookmarked: boolean
 }
 
 export interface S {
   rooms: Room[]
   selectedRoom: Room | undefined
+  bookmarkedRoomIds: string[]
 }
 
 export interface G {
@@ -33,6 +35,8 @@ export interface M {
   unshiftRoom: { room: Room }
   setRoom: { room: Room }
   selectRoom: { room: Room }
+  bookmarkRoom: { room: Room }
+  setBookmarkRoomFromBookmarkedRoomIds: {}
 }
 export interface RM {
   'rooms/clearRooms': M['clearRooms']
@@ -40,17 +44,21 @@ export interface RM {
   'rooms/unshiftRoom': M['unshiftRoom']
   'rooms/setRoom': M['setRoom']
   'rooms/selectRoom': M['selectRoom']
+  'rooms/bookmarkRoom': M['bookmarkRoom']
+  'rooms/setBookmarkRoomFromBookmarkedRoomIds': M['setBookmarkRoomFromBookmarkedRoomIds']
 }
 
 export interface A {
   asyncFetchRooms: {}
-  selectRoom: { room: Room }
   asyncCreateRoom: { name: string }
+  selectRoom: { room: Room }
+  bookmarkRoom: { room: Room }
   asyncAddRoomComment: { room: Room; comment: string }
 }
 export interface RA {
   'rooms/asyncFetchRooms': A['asyncFetchRooms']
-  'rooms/selectRoom': A['selectRoom']
   'rooms/asyncCreateRoom': A['asyncCreateRoom']
+  'rooms/selectRoom': A['selectRoom']
+  'rooms/bookmarkRoom': A['bookmarkRoom']
   'rooms/asyncAddRoomComment': A['asyncAddRoomComment']
 }

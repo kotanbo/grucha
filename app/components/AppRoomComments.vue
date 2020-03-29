@@ -24,10 +24,10 @@
           <v-card-text>
             <v-textarea
               v-model="inputedRoomComment"
-              :autofocus="true"
               :counter="maxLengthRoomComment"
               :rules="roomCommentRules"
               label="コメント"
+              autofocus
               required
             ></v-textarea>
           </v-card-text>

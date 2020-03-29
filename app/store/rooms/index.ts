@@ -4,7 +4,8 @@ import { Room, S, G, M, A } from './type'
 
 export const state = (): S => ({
   rooms: [],
-  selectedRoom: undefined
+  selectedRoom: undefined,
+  bookmarkedRoomIds: []
 })
 
 export const getters: Getters<S, G> = {
@@ -12,7 +13,9 @@ export const getters: Getters<S, G> = {
     return state.rooms.length > 0
   },
   rooms(state) {
-    return state.rooms
+    const bookmarkedRooms = state.rooms.filter((v) => v.bookmarked)
+    const notBookmarkedRooms = state.rooms.filter((v) => !v.bookmarked)
+    return [...bookmarkedRooms, ...notBookmarkedRooms]
   },
   selectedRoom(state) {
     return state.rooms.find((v) => v.id === state.selectedRoom?.id)
@@ -56,11 +59,31 @@ export const mutations: Mutations<S, M> = {
   },
   selectRoom(state, payload) {
     state.selectedRoom = payload.room
+  },
+  bookmarkRoom(state, payload) {
+    const room = state.rooms.find((v) => v.id === payload.room.id)
+    if (!room || !room.id) {
+      return
+    }
+    const index = state.bookmarkedRoomIds.findIndex(
+      (v) => v === payload.room.id
+    )
+    if (index >= 0 && room.bookmarked) {
+      state.bookmarkedRoomIds.splice(index, 1)
+    } else {
+      state.bookmarkedRoomIds.push(room.id)
+    }
+    room.bookmarked = !room.bookmarked
+  },
+  setBookmarkRoomFromBookmarkedRoomIds(state) {
+    state.rooms.map((v) => {
+      v.bookmarked = !!(v.id && state.bookmarkedRoomIds.includes(v.id))
+    })
   }
 }
 
 export const actions: Actions<S, A, G, M> = {
-  async asyncFetchRooms(ctx, payload) {
+  async asyncFetchRooms(ctx) {
     const roomsSnapshot = await this.$firestore
       .collection('rooms')
       .orderBy('createdAt', 'desc')
@@ -72,30 +95,21 @@ export const actions: Actions<S, A, G, M> = {
         id: roomSnapshot.id,
         name: data.name,
         comments: data.comments,
-        createdAt: data.createdAt
+        createdAt: data.createdAt,
+        bookmarked: false
       }
       ctx.commit('addRoom', { room })
     })
-
-    return ctx.state.rooms
-  },
-  selectRoom(ctx, payload) {
-    if (payload.room && payload.room.id) {
-      const ref = this.$firestore
-        .collection('rooms')
-        .doc(payload.room.id)
-        .collection('posts')
-      this.dispatch('rooms/posts/setPostsRef', { ref })
-    }
-    ctx.commit('selectRoom', { room: payload.room })
+    ctx.commit('setBookmarkRoomFromBookmarkedRoomIds')
   },
   async asyncCreateRoom(ctx, payload) {
     const now = new Date()
     const room: Room = {
       id: undefined,
       name: payload.name,
+      comments: [],
       createdAt: now,
-      comments: []
+      bookmarked: false
     }
     await this.$firestore
       .collection('rooms')
@@ -108,6 +122,19 @@ export const actions: Actions<S, A, G, M> = {
         room.id = docRef.id
       })
     ctx.commit('unshiftRoom', { room })
+  },
+  selectRoom(ctx, payload) {
+    if (payload.room && payload.room.id) {
+      const ref = this.$firestore
+        .collection('rooms')
+        .doc(payload.room.id)
+        .collection('posts')
+      this.dispatch('rooms/posts/setPostsRef', { ref })
+    }
+    ctx.commit('selectRoom', { room: payload.room })
+  },
+  bookmarkRoom(ctx, payload) {
+    ctx.commit('bookmarkRoom', { room: payload.room })
   },
   async asyncAddRoomComment(ctx, payload) {
     if (!payload.room || !payload.room.id) {

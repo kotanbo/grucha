@@ -22,7 +22,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item-group :mandatory="true">
+      <v-list-item-group mandatory>
         <v-list-item
           v-for="(room, index) in rooms"
           :key="index"
@@ -31,6 +31,14 @@
           <v-list-item-content>
             <v-list-item-title v-text="room.name" />
           </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon @click="bookmark(room)">
+              <v-icon v-if="!room.bookmarked">mdi-bookmark</v-icon>
+              <v-icon v-if="room.bookmarked" color="warning">
+                mdi-bookmark-check
+              </v-icon>
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
       </v-list-item-group>
     </v-list>
@@ -40,10 +48,10 @@
           <v-card-text>
             <v-text-field
               v-model="inputedRoomName"
-              :autofocus="true"
               :counter="maxLengthRoomName"
               :rules="roomNameRules"
               label="名称"
+              autofocus
               required
             ></v-text-field>
           </v-card-text>
@@ -106,6 +114,9 @@ export default Vue.extend({
     createRoom(roomName: string) {
       this.$exStore.dispatch('rooms/asyncCreateRoom', { name: roomName })
       this.$data.inputedRoomName = ''
+    },
+    bookmark(room: Room) {
+      this.$exStore.dispatch('rooms/bookmarkRoom', { room })
     }
   }
 })

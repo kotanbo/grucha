@@ -32,7 +32,11 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/firebase', '~/plugins/ex-store'],
+  plugins: [
+    '~/plugins/firebase',
+    '~/plugins/ex-store',
+    { src: '~/plugins/persistedstate', ssr: false }
+  ],
   /*
    ** Nuxt.js dev-modules
    */

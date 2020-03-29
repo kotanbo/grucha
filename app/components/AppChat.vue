@@ -5,8 +5,8 @@
         <v-col>
           <v-text-field
             v-model="searchText"
-            :hide-details="true"
             placeholder="チャット検索"
+            hide-details
             clearable
           ></v-text-field>
         </v-col>
@@ -44,11 +44,11 @@
           <v-card-text>
             <v-textarea
               v-model="inputedPostBody"
-              :autofocus="true"
               :counter="maxLengthPostBody"
               :rules="postRules"
               prepend-inner-icon="mdi-comment-text"
               rows="5"
+              autofocus
               required
             ></v-textarea>
           </v-card-text>

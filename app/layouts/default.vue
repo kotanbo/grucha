@@ -14,10 +14,10 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="true" fixed app>
+    <v-navigation-drawer v-model="rightDrawer" right fixed app>
       <AppRoomComments />
     </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
+    <v-footer app>
       <span>
         &copy; {{ new Date().getFullYear() }} {{ authorName }} All Rights
         Reserved.
@@ -39,7 +39,6 @@ export default Vue.extend({
   data() {
     return {
       drawer: false,
-      fixed: false,
       rightDrawer: false,
       authorName: process.env.AUTHOR_NAME
     }

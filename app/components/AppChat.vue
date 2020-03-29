@@ -92,12 +92,12 @@ export default Vue.extend({
   },
   computed: {
     posts() {
-      const posts = this.$exStore.getters['rooms/posts/posts']
       const searchText = this.$data.searchText
       if (searchText.length) {
-        return posts.filter((v) => v.body.includes(searchText))
+        return this.$exStore.getters['rooms/posts/findIncludeBody'](searchText)
+      } else {
+        return this.$exStore.getters['rooms/posts/posts']
       }
-      return posts
     },
     canChat() {
       const room = this.$exStore.getters['rooms/selectedRoom']
@@ -110,7 +110,7 @@ export default Vue.extend({
       if (!room || !room.id) {
         return
       }
-      this.$exStore.dispatch('rooms/posts/createPost', { room, body })
+      this.$exStore.dispatch('rooms/posts/asyncCreatePost', { room, body })
       this.$data.inputedPostBody = ''
     }
   }

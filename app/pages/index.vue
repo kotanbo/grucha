@@ -1,13 +1,3 @@
 <template>
-  <AppChat />
+  <div></div>
 </template>
-
-<script>
-import AppChat from '~/components/AppChat.vue'
-
-export default {
-  components: {
-    AppChat
-  }
-}
-</script>

@@ -4,18 +4,31 @@ import { Room, S, G, M, A } from './type'
 
 export const state = (): S => ({
   rooms: [],
-  selectedRoom: null
+  selectedRoom: undefined
 })
 
 export const getters: Getters<S, G> = {
+  isRooms(state) {
+    return state.rooms.length > 0
+  },
   rooms(state) {
     return state.rooms
   },
   selectedRoom(state) {
-    return state.selectedRoom
+    return state.rooms.find((v) => v.id === state.selectedRoom?.id)
   },
   selectedRoomComments(state) {
-    return state.selectedRoom?.comments
+    return state.selectedRoom?.comments || []
+  },
+  findIncludeName(state) {
+    return (name) => {
+      return state.rooms.filter((v) => v.name.includes(name))
+    }
+  },
+  getRoom(state) {
+    return (id) => {
+      return state.rooms.find((v) => v.id === id)
+    }
   }
 }
 
@@ -27,13 +40,13 @@ export const mutations: Mutations<S, M> = {
     state.rooms.push(payload.room)
   },
   unshiftRoom(state, payload) {
-    if (state.rooms.find((room) => room.id === payload.room.id)) {
+    if (state.rooms.find((v) => v.id === payload.room.id)) {
       return
     }
     state.rooms = [payload.room, ...state.rooms]
   },
   setRoom(state, payload) {
-    const index = state.rooms.findIndex((room) => room.id === payload.room.id)
+    const index = state.rooms.findIndex((v) => v.id === payload.room.id)
     if (index >= 0) {
       state.rooms.splice(index, 1, payload.room)
     }
@@ -47,7 +60,7 @@ export const mutations: Mutations<S, M> = {
 }
 
 export const actions: Actions<S, A, G, M> = {
-  async fetchRooms(ctx, payload) {
+  async asyncFetchRooms(ctx, payload) {
     const roomsSnapshot = await this.$firestore
       .collection('rooms')
       .orderBy('createdAt', 'desc')
@@ -76,10 +89,10 @@ export const actions: Actions<S, A, G, M> = {
     }
     ctx.commit('selectRoom', { room: payload.room })
   },
-  async createRoom(ctx, payload) {
+  async asyncCreateRoom(ctx, payload) {
     const now = new Date()
     const room: Room = {
-      id: null,
+      id: undefined,
       name: payload.name,
       createdAt: now,
       comments: []
@@ -96,7 +109,7 @@ export const actions: Actions<S, A, G, M> = {
       })
     ctx.commit('unshiftRoom', { room })
   },
-  async addRoomComment(ctx, payload) {
+  async asyncAddRoomComment(ctx, payload) {
     if (!payload.room || !payload.room.id) {
       return
     }

@@ -1,20 +1,19 @@
 <template>
   <div>
     <v-list>
-      <v-list-item @click="dialog = !dialog">
-        <v-list-item-action>
-          <v-icon>mdi-account-multiple</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>
-            ルーム作成
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
       <v-list-item>
         <v-list-item-action>
-          <v-icon>mdi-magnify</v-icon>
+          <v-btn icon @click="dialog = !dialog">
+            <v-icon>mdi-plus-circle</v-icon>
+          </v-btn>
         </v-list-item-action>
+        <v-list-item-action>
+          <v-btn icon @click="fetchRooms">
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+      <v-list-item>
         <v-list-item-content>
           <v-text-field
             v-model="searchText"
@@ -27,10 +26,9 @@
         <v-list-item
           v-for="(room, index) in rooms"
           :key="index"
-          :inactive="inactive"
-          @click="inactive = false"
+          :to="`/rooms/${room.id}`"
         >
-          <v-list-item-content @click="selectRoom(room)">
+          <v-list-item-content>
             <v-list-item-title v-text="room.name" />
           </v-list-item-content>
         </v-list-item>
@@ -76,7 +74,6 @@ export default Vue.extend({
   data() {
     return {
       searchText: '',
-      inactive: true,
       dialog: false,
       valid: true,
       inputedRoomName: '',
@@ -91,24 +88,23 @@ export default Vue.extend({
   },
   computed: {
     rooms() {
-      const rooms = this.$exStore.getters['rooms/rooms']
       const searchText = this.$data.searchText
       if (searchText.length) {
-        return rooms.filter((v) => v.name.includes(searchText))
+        return this.$exStore.getters['rooms/findIncludeName'](searchText)
+      } else {
+        return this.$exStore.getters['rooms/rooms']
       }
-      return rooms
     }
   },
   mounted() {
-    this.$exStore.dispatch('rooms/fetchRooms')
+    this.fetchRooms()
   },
   methods: {
-    selectRoom(room: Room) {
-      this.$exStore.dispatch('rooms/selectRoom', { room })
-      this.$exStore.dispatch('app/setTitle', { title: room.name })
+    fetchRooms() {
+      this.$exStore.dispatch('rooms/asyncFetchRooms')
     },
     createRoom(roomName: string) {
-      this.$exStore.dispatch('rooms/createRoom', { name: roomName })
+      this.$exStore.dispatch('rooms/asyncCreateRoom', { name: roomName })
       this.$data.inputedRoomName = ''
     }
   }

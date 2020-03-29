@@ -11,20 +11,22 @@ export interface S {
 
 export interface G {
   posts: Post[]
+  findIncludeBody: (body: string) => Post[]
 }
 export interface RG {
   'rooms/posts/posts': G['posts']
+  'rooms/posts/findIncludeBody': G['findIncludeBody']
 }
 
 export interface M {}
 export interface RM {}
 
 export interface A {
-  createPost: {
+  asyncCreatePost: {
     room: Room
     body: string
   }
 }
 export interface RA {
-  'rooms/posts/createPost': A['createPost']
+  'rooms/posts/asyncCreatePost': A['asyncCreatePost']
 }

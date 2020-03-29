@@ -1,5 +1,5 @@
 export interface Room {
-  id: string | null
+  id: string | undefined
   name: string
   comments: string[]
   createdAt: {}
@@ -7,18 +7,24 @@ export interface Room {
 
 export interface S {
   rooms: Room[]
-  selectedRoom: Room | null
+  selectedRoom: Room | undefined
 }
 
 export interface G {
+  isRooms: boolean
   rooms: Room[]
-  selectedRoom: Room | null
-  selectedRoomComments: string[] | undefined
+  selectedRoom: Room | undefined
+  selectedRoomComments: string[]
+  findIncludeName: (name: string) => Room[]
+  getRoom: (id: string) => Room | undefined
 }
 export interface RG {
+  'rooms/isRooms': G['isRooms']
   'rooms/rooms': G['rooms']
   'rooms/selectedRoom': G['selectedRoom']
   'rooms/selectedRoomComments': G['selectedRoomComments']
+  'rooms/findIncludeName': G['findIncludeName']
+  'rooms/getRoom': G['getRoom']
 }
 
 export interface M {
@@ -37,14 +43,14 @@ export interface RM {
 }
 
 export interface A {
-  fetchRooms: {}
+  asyncFetchRooms: {}
   selectRoom: { room: Room }
-  createRoom: { name: string }
-  addRoomComment: { room: Room; comment: string }
+  asyncCreateRoom: { name: string }
+  asyncAddRoomComment: { room: Room; comment: string }
 }
 export interface RA {
-  'rooms/fetchRooms': A['fetchRooms']
+  'rooms/asyncFetchRooms': A['asyncFetchRooms']
   'rooms/selectRoom': A['selectRoom']
-  'rooms/createRoom': A['createRoom']
-  'rooms/addRoomComment': A['addRoomComment']
+  'rooms/asyncCreateRoom': A['asyncCreateRoom']
+  'rooms/asyncAddRoomComment': A['asyncAddRoomComment']
 }

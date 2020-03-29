@@ -74,6 +74,7 @@ export default {
    ** Build configuration
    */
   env: {
+    BASE_URL: 'https://grucha.netlify.com',
     APP_TITLE: appTitle,
     AUTHOR_NAME: process.env.npm_package_author_name || '',
     // Firebase設定

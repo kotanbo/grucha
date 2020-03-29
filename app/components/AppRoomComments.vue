@@ -81,7 +81,7 @@ export default Vue.extend({
       if (!room || !room.id) {
         return
       }
-      this.$exStore.dispatch('rooms/addRoomComment', { room, comment })
+      this.$exStore.dispatch('rooms/asyncAddRoomComment', { room, comment })
       this.$data.inputedRoomComment = ''
     }
   }

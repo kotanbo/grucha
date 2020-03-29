@@ -1,6 +1,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: 'development' | 'production' | 'test'
+    readonly BASE_URL: string
     readonly APP_TITLE: string
     readonly AUTHOR_NAME: string
     readonly FIREBASE_API_KEY: string

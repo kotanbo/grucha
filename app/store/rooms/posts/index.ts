@@ -9,11 +9,16 @@ export const state = (): S => ({
 export const getters: Getters<S, G> = {
   posts(state) {
     return state.posts
+  },
+  findIncludeBody(state) {
+    return (body) => {
+      return state.posts.filter((v) => v.body.includes(body))
+    }
   }
 }
 
 export const actions: Actions<S, A, G, M> | {} = {
-  async createPost(ctx, payload) {
+  async asyncCreatePost(ctx, payload) {
     if (!payload.room || !payload.room.id) {
       return
     }

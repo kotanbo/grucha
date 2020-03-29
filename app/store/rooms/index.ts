@@ -5,7 +5,7 @@ import { Room, S, G, M, A } from './type'
 export const state = (): S => ({
   rooms: [],
   selectedRoom: undefined,
-  bookmarkedRoomIds: []
+  bookmarkedRoomIds: [] // vuex-persistedstate の対象
 })
 
 export const getters: Getters<S, G> = {

@@ -3,7 +3,7 @@
     <v-list>
       <v-list-item @click="dialog = !dialog">
         <v-list-item-action>
-          <v-icon>mdi-comment</v-icon>
+          <v-icon color="primary">mdi-comment</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>

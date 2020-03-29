@@ -3,12 +3,12 @@
     <v-list>
       <v-list-item>
         <v-list-item-action>
-          <v-btn icon @click="dialog = !dialog">
-            <v-icon>mdi-plus-circle</v-icon>
+          <v-btn icon color="secondary" @click="dialog = !dialog">
+            <v-icon>mdi-folder-plus</v-icon>
           </v-btn>
         </v-list-item-action>
         <v-list-item-action>
-          <v-btn icon @click="fetchRooms">
+          <v-btn icon color="success" @click="fetchRooms">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-list-item-action>

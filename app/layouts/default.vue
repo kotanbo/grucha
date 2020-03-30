@@ -18,10 +18,7 @@
       <AppRoomComments />
     </v-navigation-drawer>
     <v-footer app>
-      <span>
-        &copy; {{ new Date().getFullYear() }} {{ authorName }} All Rights
-        Reserved.
-      </span>
+      <span> Author by {{ authorName }} </span>
     </v-footer>
   </v-app>
 </template>

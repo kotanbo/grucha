@@ -2,16 +2,15 @@
   <div>
     <v-list>
       <v-list-item>
-        <v-list-item-action>
-          <v-btn fab small color="indigo" @click="displayRoomForm">
-            <v-icon>mdi-folder-plus</v-icon>
-          </v-btn>
-        </v-list-item-action>
-        <v-list-item-action>
-          <v-btn fab small color="green" @click="fetchRooms">
-            <v-icon>mdi-refresh</v-icon>
-          </v-btn>
-        </v-list-item-action>
+        <v-btn fab small color="indigo" class="mr-5" @click="displayRoomForm">
+          <v-icon>mdi-folder-plus</v-icon>
+        </v-btn>
+        <v-btn fab small color="green" class="mr-5" @click="fetchRooms">
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+        <v-btn fab small color="secondary" to="/">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
       </v-list-item>
       <v-list-item>
         <v-list-item-content>

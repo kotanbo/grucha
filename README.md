@@ -1,6 +1,6 @@
-# grucha
+# グルチャ
 
-> オープングループチャット
+> 登録不要のオープンなグループチャット
 
 ## Build Setup
 
@@ -20,3 +20,7 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## Demo
+
+https://grucha.netlify.com/

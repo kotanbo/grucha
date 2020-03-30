@@ -5,12 +5,21 @@ import { Room, S, G, M, A } from './type'
 export const state = (): S => ({
   rooms: [],
   selectedRoom: undefined,
+  createdRoomIds: [], // vuex-persistedstate の対象
   bookmarkedRoomIds: [] // vuex-persistedstate の対象
 })
 
 export const getters: Getters<S, G> = {
   isRooms(state) {
     return state.rooms.length > 0
+  },
+  isSelectedRoom(state) {
+    return !!state.selectedRoom
+  },
+  canUpdateRoom(state) {
+    return !!(
+      state.selectedRoom && state.createdRoomIds.includes(state.selectedRoom.id)
+    )
   },
   rooms(state) {
     const bookmarkedRooms = state.rooms.filter((v) => v.bookmarked)
@@ -36,17 +45,26 @@ export const getters: Getters<S, G> = {
 }
 
 export const mutations: Mutations<S, M> = {
-  clearRooms(state, payload) {
+  clearRooms(state) {
     state.rooms.length = 0
   },
   addRoom(state, payload) {
     state.rooms.push(payload.room)
   },
-  unshiftRoom(state, payload) {
+  prependRoom(state, payload) {
     if (state.rooms.find((v) => v.id === payload.room.id)) {
       return
     }
     state.rooms = [payload.room, ...state.rooms]
+  },
+  deleteRoom(state, payload) {
+    const index = state.rooms.findIndex((v) => v.id === payload.room.id)
+    if (index >= 0) {
+      state.rooms.splice(index, 1)
+    }
+    if (state.selectedRoom?.id === payload.room.id) {
+      state.selectedRoom = undefined
+    }
   },
   setRoom(state, payload) {
     const index = state.rooms.findIndex((v) => v.id === payload.room.id)
@@ -60,9 +78,12 @@ export const mutations: Mutations<S, M> = {
   selectRoom(state, payload) {
     state.selectedRoom = payload.room
   },
+  addCreatedRoomIds(state, payload) {
+    state.createdRoomIds.push(payload.room.id)
+  },
   bookmarkRoom(state, payload) {
     const room = state.rooms.find((v) => v.id === payload.room.id)
-    if (!room || !room.id) {
+    if (!room) {
       return
     }
     const index = state.bookmarkedRoomIds.findIndex(
@@ -105,7 +126,7 @@ export const actions: Actions<S, A, G, M> = {
   async asyncCreateRoom(ctx, payload) {
     const now = new Date()
     const room: Room = {
-      id: undefined,
+      id: '',
       name: payload.name,
       comments: [],
       createdAt: now,
@@ -120,40 +141,85 @@ export const actions: Actions<S, A, G, M> = {
       })
       .then((docRef) => {
         room.id = docRef.id
+        ctx.commit('prependRoom', { room })
+        ctx.commit('addCreatedRoomIds', { room })
       })
-    ctx.commit('unshiftRoom', { room })
+  },
+  async asyncEditRoom(ctx, payload) {
+    const name = payload.name
+    const room = cloneDeep<Room>(payload.room)
+    await this.$firestore
+      .collection('rooms')
+      .doc(room.id)
+      .update({
+        name
+      })
+      .then(() => {
+        room.name = name
+        ctx.commit('setRoom', { room })
+      })
+  },
+  async asyncDeleteRoom(ctx, payload) {
+    const room = payload.room
+    await this.$firestore
+      .collection('rooms')
+      .doc(room.id)
+      .delete()
+      .then(() => {
+        ctx.commit('deleteRoom', { room })
+      })
   },
   selectRoom(ctx, payload) {
-    if (payload.room && payload.room.id) {
-      const ref = this.$firestore
-        .collection('rooms')
-        .doc(payload.room.id)
-        .collection('posts')
-      this.dispatch('rooms/posts/setPostsRef', { ref })
-    }
+    const ref = this.$firestore
+      .collection('rooms')
+      .doc(payload.room.id)
+      .collection('posts')
+    this.dispatch('rooms/posts/setPostsRef', { ref })
     ctx.commit('selectRoom', { room: payload.room })
   },
   bookmarkRoom(ctx, payload) {
     ctx.commit('bookmarkRoom', { room: payload.room })
   },
   async asyncAddRoomComment(ctx, payload) {
-    if (!payload.room || !payload.room.id) {
-      return
-    }
     const comments = [...payload.room.comments, payload.comment]
     const room = cloneDeep<Room>(payload.room)
-    if (!room.id) {
-      return
-    }
     await this.$firestore
       .collection('rooms')
       .doc(room.id)
       .update({
         comments
       })
-      .then((docRef) => {
+      .then(() => {
         room.comments = comments
+        ctx.commit('setRoom', { room })
       })
-    ctx.commit('setRoom', { room })
+  },
+  async asyncEditRoomComment(ctx, payload) {
+    const room = cloneDeep<Room>(payload.room)
+    if (room.comments[payload.commentIndex]) {
+      room.comments[payload.commentIndex] = payload.comment
+    }
+    await this.$firestore
+      .collection('rooms')
+      .doc(room.id)
+      .update({
+        comments: room.comments
+      })
+      .then(() => {
+        ctx.commit('setRoom', { room })
+      })
+  },
+  async asyncDeleteRoomComment(ctx, payload) {
+    const room = cloneDeep<Room>(payload.room)
+    room.comments.splice(payload.commentIndex, 1)
+    await this.$firestore
+      .collection('rooms')
+      .doc(room.id)
+      .update({
+        comments: room.comments
+      })
+      .then(() => {
+        ctx.commit('setRoom', { room })
+      })
   }
 }

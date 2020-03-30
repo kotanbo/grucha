@@ -20,6 +20,8 @@ export default Vue.extend({
       ctx.redirect('/')
       return {}
     }
+    ctx.app.$exStore.dispatch('rooms/selectRoom', { room })
+    ctx.app.$exStore.dispatch('app/setTitle', { title: room.name })
 
     return {
       room
@@ -27,9 +29,6 @@ export default Vue.extend({
   },
   head() {
     const room = this.$data.room
-    this.$exStore.dispatch('rooms/selectRoom', { room })
-    this.$exStore.dispatch('app/setTitle', { title: room.name })
-
     return {
       title: room.name,
       meta: [

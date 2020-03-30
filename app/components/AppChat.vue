@@ -12,32 +12,52 @@
         </v-col>
       </v-row>
     </v-toolbar>
-    <v-card class="mt-10">
-      <v-btn
-        color="primary"
-        small
-        absolute
-        top
-        right
-        fab
-        @click="dialog = !dialog"
-      >
-        <v-icon>mdi-message-plus</v-icon>
+    <v-list v-if="posts.length" two-line>
+      <v-list-item v-for="(post, index) in posts" :key="index">
+        <v-list-item-content>
+          <v-list-item-title
+            style="white-space: pre-wrap;"
+            v-text="post.body"
+          ></v-list-item-title>
+          <v-list-item-subtitle
+            v-text="post.createdAt.toDate().toLocaleString()"
+          ></v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+    <v-btn
+      fab
+      fixed
+      bottom
+      right
+      color="indigo"
+      style="z-index:9"
+      @click="dialog = !dialog"
+    >
+      <v-icon>mdi-wechat</v-icon>
+    </v-btn>
+    <v-speed-dial
+      v-if="canUpdateRoom"
+      v-model="fab"
+      fixed
+      bottom
+      right
+      direction="left"
+      style="z-index:9; margin-right: 70px"
+    >
+      <template v-slot:activator>
+        <v-btn v-model="fab" color="blue" fab>
+          <v-icon v-if="fab">mdi-close</v-icon>
+          <v-icon v-else>mdi-gamepad</v-icon>
+        </v-btn>
+      </template>
+      <v-btn fab small color="green" @click="editRoom">
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-list v-if="posts.length" two-line>
-        <v-list-item v-for="(post, index) in posts" :key="index">
-          <v-list-item-content>
-            <v-list-item-title
-              style="white-space: pre-wrap;"
-              v-text="post.body"
-            ></v-list-item-title>
-            <v-list-item-subtitle
-              v-text="post.createdAt.toDate().toLocaleString()"
-            ></v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-card>
+      <v-btn fab small color="red" @click="deleteRoom">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent>
@@ -67,17 +87,24 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <AppRoomForm ref="roomForm" />
   </v-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Room } from '~/store/rooms/type'
+import AppRoomForm from '~/components/AppRoomForm.vue'
 
 const MAX_LENGTH_POST_BODY = 200
 export default Vue.extend({
+  components: {
+    AppRoomForm
+  },
   data() {
     return {
       searchText: '',
+      fab: false,
       dialog: false,
       valid: true,
       inputedPostBody: '',
@@ -100,14 +127,41 @@ export default Vue.extend({
       }
     },
     canChat() {
-      const room = this.$exStore.getters['rooms/selectedRoom']
-      return room && room.id
+      return this.$exStore.getters['rooms/isSelectedRoom']
+    },
+    canUpdateRoom() {
+      return this.$exStore.getters['rooms/canUpdateRoom']
     }
   },
   methods: {
+    editRoom() {
+      const room = this.$exStore.getters['rooms/selectedRoom']
+      if (!room) {
+        return
+      }
+      const editType = true
+      const callback = (room: Room) => {
+        this.$exStore.dispatch('app/setTitle', { title: room.name })
+      }
+      const form: any = this.$refs.roomForm
+      form.display(editType, callback)
+    },
+    deleteRoom() {
+      const room = this.$exStore.getters['rooms/selectedRoom']
+      if (!room) {
+        return
+      }
+      if (confirm(room.name + '\n\nを削除しますか？')) {
+        this.$exStore.dispatch('rooms/asyncDeleteRoom', { room }).then(() => {
+          this.$exStore.dispatch('app/setTitle', {
+            title: process.env.APP_TITLE
+          })
+        })
+      }
+    },
     createPost(body: string) {
       const room = this.$exStore.getters['rooms/selectedRoom']
-      if (!room || !room.id) {
+      if (!room) {
         return
       }
       this.$exStore.dispatch('rooms/posts/asyncCreatePost', { room, body })

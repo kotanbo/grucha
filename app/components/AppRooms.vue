@@ -3,12 +3,12 @@
     <v-list>
       <v-list-item>
         <v-list-item-action>
-          <v-btn icon color="secondary" @click="dialog = !dialog">
+          <v-btn fab small color="indigo" @click="displayRoomForm">
             <v-icon>mdi-folder-plus</v-icon>
           </v-btn>
         </v-list-item-action>
         <v-list-item-action>
-          <v-btn icon color="success" @click="fetchRooms">
+          <v-btn fab small color="green" @click="fetchRooms">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-list-item-action>
@@ -42,47 +42,23 @@
         </v-list-item>
       </v-list-item-group>
     </v-list>
-    <v-dialog v-model="dialog" max-width="500px">
-      <v-card>
-        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent>
-          <v-card-text>
-            <v-text-field
-              v-model="inputedRoomName"
-              :counter="maxLengthRoomName"
-              :rules="roomNameRules"
-              label="名称"
-              autofocus
-              required
-            ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              :disabled="!valid"
-              @click="
-                dialog = false
-                createRoom(inputedRoomName)
-              "
-            >
-              登録
-            </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
+    <AppRoomForm ref="roomForm" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Room } from '~/store/rooms/type'
+import AppRoomForm from '~/components/AppRoomForm.vue'
 
 const MAX_LENGTH_ROOM_NAME = 50
 export default Vue.extend({
+  components: {
+    AppRoomForm
+  },
   data() {
     return {
       searchText: '',
-      dialog: false,
       valid: true,
       inputedRoomName: '',
       roomNameRules: [
@@ -111,9 +87,9 @@ export default Vue.extend({
     fetchRooms() {
       this.$exStore.dispatch('rooms/asyncFetchRooms')
     },
-    createRoom(roomName: string) {
-      this.$exStore.dispatch('rooms/asyncCreateRoom', { name: roomName })
-      this.$data.inputedRoomName = ''
+    displayRoomForm() {
+      const form: any = this.$refs.roomForm
+      form.display()
     },
     bookmark(room: Room) {
       this.$exStore.dispatch('rooms/bookmarkRoom', { room })

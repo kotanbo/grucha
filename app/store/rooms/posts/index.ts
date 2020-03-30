@@ -19,9 +19,6 @@ export const getters: Getters<S, G> = {
 
 export const actions: Actions<S, A, G, M> | {} = {
   async asyncCreatePost(ctx, payload) {
-    if (!payload.room || !payload.room.id) {
-      return
-    }
     const now = new Date()
     const post: Post = {
       body: payload.body,

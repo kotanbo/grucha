@@ -174,6 +174,7 @@ export const actions: Actions<S, A, G, M> = {
       .collection('rooms')
       .doc(payload.room.id)
       .collection('posts')
+      .orderBy('createdAt', 'desc')
     this.dispatch('rooms/posts/setPostsRef', { ref })
     ctx.commit('selectRoom', { room: payload.room })
   },

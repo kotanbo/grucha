@@ -4,7 +4,11 @@ export default ({ store }) => {
   if (process.client) {
     window.onNuxtReady(() => {
       createPersistedState({
-        paths: ['rooms.createdRoomIds', 'rooms.bookmarkedRoomIds']
+        paths: [
+          'rooms.createdRoomIds',
+          'rooms.bookmarkedRoomIds',
+          'rooms.posts.createdPostIds'
+        ]
       })(store)
     })
   }

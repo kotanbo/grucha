@@ -23,6 +23,22 @@
             v-text="post.createdAt.toDate().toLocaleString()"
           ></v-list-item-subtitle>
         </v-list-item-content>
+        <v-list-item-action v-if="canUpdatePost(post)">
+          <v-list-item>
+            <v-btn fab x-small color="green" @click="displayPostDialog(post)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+              fab
+              x-small
+              color="red"
+              class="ml-5"
+              @click="deletePost(post)"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
     <v-btn
@@ -32,7 +48,7 @@
       right
       color="indigo"
       style="z-index:9"
-      @click="dialog = !dialog"
+      @click="displayPostDialog()"
     >
       <v-icon>mdi-wechat</v-icon>
     </v-btn>
@@ -78,7 +94,7 @@
               :disabled="!valid"
               @click="
                 dialog = false
-                createPost(inputedPostBody)
+                savePost(inputedPostBody, editPost)
               "
             >
               投稿
@@ -94,6 +110,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Room } from '~/store/rooms/type'
+import { Post } from '~/store/rooms/posts/type'
 import AppRoomForm from '~/components/AppRoomForm.vue'
 
 const MAX_LENGTH_POST_BODY = 200
@@ -108,6 +125,7 @@ export default Vue.extend({
       dialog: false,
       valid: true,
       inputedPostBody: '',
+      editPost: undefined as Post | undefined,
       postRules: [
         (v: string) => !!v || '必須項目です。',
         (v: string) =>
@@ -159,13 +177,44 @@ export default Vue.extend({
         })
       }
     },
-    createPost(body: string) {
+    canUpdatePost(post: Post) {
+      const createdPostIds = this.$exStore.getters['rooms/posts/createdPostIds']
+      return !!createdPostIds.find((v) => v === post.id)
+    },
+    displayPostDialog(post?: Post) {
+      if (post !== undefined) {
+        this.inputedPostBody = post.body
+      }
+      this.editPost = post
+      this.dialog = !this.dialog
+    },
+    savePost(body: string, editPost?: Post) {
       const room = this.$exStore.getters['rooms/selectedRoom']
       if (!room) {
         return
       }
-      this.$exStore.dispatch('rooms/posts/asyncCreatePost', { room, body })
+      if (editPost !== undefined) {
+        this.$exStore.dispatch('rooms/posts/asyncEditPost', {
+          room,
+          post: editPost,
+          body
+        })
+      } else {
+        this.$exStore.dispatch('rooms/posts/asyncCreatePost', { room, body })
+      }
       this.$data.inputedPostBody = ''
+    },
+    deletePost(post: Post) {
+      const room = this.$exStore.getters['rooms/selectedRoom']
+      if (!room) {
+        return
+      }
+      if (confirm(post.body + '\n\nを削除しますか？')) {
+        this.$exStore.dispatch('rooms/posts/asyncDeletePost', {
+          room,
+          post
+        })
+      }
     }
   }
 })

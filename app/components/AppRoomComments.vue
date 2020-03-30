@@ -3,7 +3,7 @@
     <v-list>
       <v-list-item v-if="canComment">
         <v-list-item-action>
-          <v-btn fab small color="teal" @click="displayRoomCommentDialog">
+          <v-btn fab small color="teal" @click="displayRoomCommentDialog()">
             <v-icon>mdi-comment</v-icon>
           </v-btn>
         </v-list-item-action>

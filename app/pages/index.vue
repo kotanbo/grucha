@@ -6,40 +6,45 @@
           <v-row class="fill-height" align="center" justify="center">
             <div class="display-1 text-center" style="width: 70%">
               <div v-if="i === 0">
-                1. ルーム作成<br /><br />
-                左メニューの
-                <v-icon x-large>mdi-folder-plus</v-icon>
-                からルーム作成<br />
-                （ルーム更新：
-                <v-icon x-large>mdi-refresh</v-icon>
-                ）
+                登録不要のオープンなグループチャット<br /><br />
+                ルームを作成しチャット<br />
+                使い方の詳細は右へ
               </div>
               <div v-if="i === 1">
-                2. ルーム選択<br /><br />
-                左メニューのルームを選択 <br />
-                （ブックマーク：
-                <v-icon x-large>mdi-bookmark-check</v-icon>
+                1. ルーム作成<br /><br />
+                左メニューの
+                <AppIconDisplayRoomForm x-large />
+                からルーム作成<br />
+                （ルーム更新：
+                <AppIconFetchRooms x-large />
                 ）
               </div>
               <div v-if="i === 2">
-                3. ルームコメント作成<br /><br />
-                右メニューの
-                <v-icon x-large>mdi-comment</v-icon>
-                からルームコメント作成
+                2. ルーム選択<br /><br />
+                左メニューのルームを選択 <br />
+                （ブックマーク：
+                <AppIconBookmark x-large />
+                ）
               </div>
               <div v-if="i === 3">
-                4. チャット<br /><br />
-                右下の
-                <v-icon x-large>mdi-wechat</v-icon>
-                からチャット
+                3. ルームコメント作成<br /><br />
+                右メニューの
+                <AppIconDisplayRoomCommentForm x-large />
+                からルームコメント作成
               </div>
               <div v-if="i === 4">
-                5. ルーム更新・削除<br /><br />
+                4. チャット<br /><br />
                 右下の
-                <v-icon x-large>mdi-gamepad</v-icon>
-                からルーム更新・削除<br />（作成者のみ、一定期間のみ）
+                <AppIconDisplayPostForm x-large />
+                からチャット
               </div>
               <div v-if="i === 5">
+                5. ルーム更新・削除<br /><br />
+                右下の
+                <AppIconUpdateRoom x-large />
+                からルーム更新・削除<br />（作成者のみ、一定期間のみ）
+              </div>
+              <div v-if="i === 6">
                 Have a good time 👍
               </div>
             </div>
@@ -52,16 +57,31 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import AppIconDisplayRoomForm from '~/components/AppIconDisplayRoomForm.vue'
+import AppIconFetchRooms from '~/components/AppIconFetchRooms.vue'
+import AppIconBookmark from '~/components/AppIconBookmark.vue'
+import AppIconDisplayRoomCommentForm from '~/components/AppIconDisplayRoomCommentForm.vue'
+import AppIconDisplayPostForm from '~/components/AppIconDisplayPostForm.vue'
+import AppIconUpdateRoom from '~/components/AppIconUpdateRoom.vue'
 
 export default Vue.extend({
+  components: {
+    AppIconDisplayRoomForm,
+    AppIconFetchRooms,
+    AppIconBookmark,
+    AppIconDisplayRoomCommentForm,
+    AppIconDisplayPostForm,
+    AppIconUpdateRoom
+  },
   data() {
     this.$exStore.dispatch('app/setTitle', {
       title: process.env.APP_TITLE
     })
     return {
       colors: [
-        'primary',
-        'secondary',
+        'blue',
+        'cyan',
+        'amber',
         'yellow darken-4',
         'red lighten-2',
         'purple lighten-2',

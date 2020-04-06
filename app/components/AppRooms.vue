@@ -3,10 +3,10 @@
     <v-list>
       <v-list-item>
         <v-btn fab small color="indigo" class="mr-5" @click="displayRoomForm">
-          <v-icon>mdi-folder-plus</v-icon>
+          <AppIconDisplayRoomForm />
         </v-btn>
         <v-btn fab small color="green" class="mr-5" @click="fetchRooms">
-          <v-icon>mdi-refresh</v-icon>
+          <AppIconFetchRooms />
         </v-btn>
         <v-btn fab small color="secondary" to="/">
           <v-icon>mdi-home</v-icon>
@@ -32,7 +32,7 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-btn icon @click="bookmark(room)">
-              <v-icon v-if="!room.bookmarked">mdi-bookmark</v-icon>
+              <AppIconBookmark v-if="!room.bookmarked"></AppIconBookmark>
               <v-icon v-if="room.bookmarked" color="warning">
                 mdi-bookmark-check
               </v-icon>
@@ -49,11 +49,17 @@
 import Vue from 'vue'
 import { Room } from '~/store/rooms/type'
 import AppRoomForm from '~/components/AppRoomForm.vue'
+import AppIconDisplayRoomForm from '~/components/AppIconDisplayRoomForm.vue'
+import AppIconFetchRooms from '~/components/AppIconFetchRooms.vue'
+import AppIconBookmark from '~/components/AppIconBookmark.vue'
 
 const MAX_LENGTH_ROOM_NAME = 50
 export default Vue.extend({
   components: {
-    AppRoomForm
+    AppRoomForm,
+    AppIconDisplayRoomForm,
+    AppIconFetchRooms,
+    AppIconBookmark
   },
   data() {
     return {

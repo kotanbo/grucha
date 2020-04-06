@@ -25,7 +25,7 @@
         </v-list-item-content>
         <v-list-item-action v-if="canUpdatePost(post)">
           <v-list-item>
-            <v-btn fab x-small color="green" @click="displayPostDialog(post)">
+            <v-btn fab x-small color="green" @click="displayPostForm(post)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn
@@ -48,9 +48,9 @@
       right
       color="indigo"
       style="z-index:9"
-      @click="displayPostDialog()"
+      @click="displayPostForm()"
     >
-      <v-icon>mdi-wechat</v-icon>
+      <AppIconDisplayPostForm />
     </v-btn>
     <v-speed-dial
       v-if="canUpdateRoom"
@@ -64,7 +64,7 @@
       <template v-slot:activator>
         <v-btn v-model="fab" color="blue" fab>
           <v-icon v-if="fab">mdi-close</v-icon>
-          <v-icon v-else>mdi-gamepad</v-icon>
+          <AppIconUpdateRoom v-else />
         </v-btn>
       </template>
       <v-btn fab small color="green" @click="editRoom">
@@ -112,11 +112,15 @@ import Vue from 'vue'
 import { Room } from '~/store/rooms/type'
 import { Post } from '~/store/rooms/posts/type'
 import AppRoomForm from '~/components/AppRoomForm.vue'
+import AppIconDisplayPostForm from '~/components/AppIconDisplayPostForm.vue'
+import AppIconUpdateRoom from '~/components/AppIconUpdateRoom.vue'
 
 const MAX_LENGTH_POST_BODY = 200
 export default Vue.extend({
   components: {
-    AppRoomForm
+    AppRoomForm,
+    AppIconDisplayPostForm,
+    AppIconUpdateRoom
   },
   data() {
     return {
@@ -181,7 +185,7 @@ export default Vue.extend({
       const createdPostIds = this.$exStore.getters['rooms/posts/createdPostIds']
       return !!createdPostIds.find((v) => v === post.id)
     },
-    displayPostDialog(post?: Post) {
+    displayPostForm(post?: Post) {
       if (post !== undefined) {
         this.inputedPostBody = post.body
       }

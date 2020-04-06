@@ -3,8 +3,8 @@
     <v-list>
       <v-list-item v-if="canComment">
         <v-list-item-action>
-          <v-btn fab small color="teal" @click="displayRoomCommentDialog()">
-            <v-icon>mdi-comment</v-icon>
+          <v-btn fab small color="teal" @click="displayRoomCommentForm()">
+            <AppIconDisplayRoomCommentForm />
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -25,7 +25,7 @@
               fab
               x-small
               color="green"
-              @click="displayRoomCommentDialog(index)"
+              @click="displayRoomCommentForm(index)"
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -70,9 +70,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Room } from '~/store/rooms/type'
+import AppIconDisplayRoomCommentForm from '~/components/AppIconDisplayRoomCommentForm.vue'
 
 const MAX_LENGTH_ROOM_COMMENT = 200
 export default Vue.extend({
+  components: {
+    AppIconDisplayRoomCommentForm
+  },
   data() {
     return {
       fab: false,
@@ -99,7 +103,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    displayRoomCommentDialog(editCommentIndex?: number) {
+    displayRoomCommentForm(editCommentIndex?: number) {
       const room = this.$exStore.getters['rooms/selectedRoom']
       if (!room) {
         return

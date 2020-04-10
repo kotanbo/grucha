@@ -1,10 +1,17 @@
 # グルチャ
 
-> 登録不要のオープンなグループチャット
+登録不要のオープンなグループチャット
+
+## Description
+
+Nuxt.js + Vuex + VuexFire + TypeScript + Firestore
 
 ## Build Setup
 
 ```bash
+# set Firestore settings
+$ vi nuxt.config.js
+
 # install dependencies
 $ yarn install
 

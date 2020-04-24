@@ -182,8 +182,7 @@ export default Vue.extend({
       }
     },
     canUpdatePost(post: Post) {
-      const createdPostIds = this.$exStore.getters['rooms/posts/createdPostIds']
-      return !!createdPostIds.find((v) => v === post.id)
+      return post.createdBy === this.$exStore.getters['user/user'].uid
     },
     displayPostForm(post?: Post) {
       if (post !== undefined) {

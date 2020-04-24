@@ -5,7 +5,6 @@ import { Room, S, G, M, A } from './type'
 export const state = (): S => ({
   rooms: [],
   selectedRoom: undefined,
-  createdRoomIds: [], // vuex-persistedstate の対象
   bookmarkedRoomIds: [] // vuex-persistedstate の対象
 })
 
@@ -16,9 +15,10 @@ export const getters: Getters<S, G> = {
   isSelectedRoom(state) {
     return !!state.selectedRoom
   },
-  canUpdateRoom(state) {
+  canUpdateRoom(state, getters, rootState, rootGetters) {
     return !!(
-      state.selectedRoom && state.createdRoomIds.includes(state.selectedRoom.id)
+      state.selectedRoom &&
+      state.selectedRoom.createdBy === rootGetters['user/user'].uid
     )
   },
   rooms(state) {
@@ -78,9 +78,6 @@ export const mutations: Mutations<S, M> = {
   selectRoom(state, payload) {
     state.selectedRoom = payload.room
   },
-  addCreatedRoomIds(state, payload) {
-    state.createdRoomIds.push(payload.room.id)
-  },
   bookmarkRoom(state, payload) {
     const room = state.rooms.find((v) => v.id === payload.room.id)
     if (!room) {
@@ -116,6 +113,7 @@ export const actions: Actions<S, A, G, M> = {
         id: roomSnapshot.id,
         name: data.name,
         comments: data.comments,
+        createdBy: data.createdBy,
         createdAt: data.createdAt,
         bookmarked: false
       }
@@ -129,6 +127,7 @@ export const actions: Actions<S, A, G, M> = {
       id: '',
       name: payload.name,
       comments: [],
+      createdBy: ctx.rootGetters['user/user'].uid,
       createdAt: now,
       bookmarked: false
     }
@@ -136,13 +135,13 @@ export const actions: Actions<S, A, G, M> = {
       .collection('rooms')
       .add({
         name: room.name,
+        createdBy: room.createdBy,
         createdAt: room.createdAt,
         comments: room.comments
       })
       .then((docRef) => {
         room.id = docRef.id
         ctx.commit('prependRoom', { room })
-        ctx.commit('addCreatedRoomIds', { room })
       })
   },
   async asyncEditRoom(ctx, payload) {

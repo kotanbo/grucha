@@ -1,18 +1,14 @@
 import { firestoreAction } from 'vuexfire'
 import { Getters, Mutations, Actions } from 'vuex'
-import { Post, S, G, M, A } from './type'
+import { Post, S, G, A } from './type'
 
 export const state = (): S => ({
-  posts: [],
-  createdPostIds: [] // vuex-persistedstate の対象
+  posts: []
 })
 
 export const getters: Getters<S, G> = {
   posts(state) {
     return state.posts
-  },
-  createdPostIds(state) {
-    return state.createdPostIds
   },
   findIncludeBody(state) {
     return (body) => {
@@ -20,18 +16,14 @@ export const getters: Getters<S, G> = {
     }
   }
 }
-export const mutations: Mutations<S, M> = {
-  addCreatedPostIds(state, payload) {
-    state.createdPostIds.push(payload.post.id)
-  }
-}
 
-export const actions: Actions<S, A, G, M> | {} = {
+export const actions: Actions<S, A, G> | {} = {
   async asyncCreatePost(ctx, payload) {
     const now = new Date()
     const post: Post = {
       id: '',
       body: payload.body,
+      createdBy: ctx.rootGetters['user/user'].uid,
       createdAt: now
     }
     await this.$firestore
@@ -40,11 +32,11 @@ export const actions: Actions<S, A, G, M> | {} = {
       .collection('posts')
       .add({
         body: post.body,
+        createdBy: post.createdBy,
         createdAt: post.createdAt
       })
       .then((docRef) => {
         post.id = docRef.id
-        ctx.commit('addCreatedPostIds', { post })
       })
   },
   async asyncEditPost(ctx, payload) {

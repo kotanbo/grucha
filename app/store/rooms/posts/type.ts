@@ -3,30 +3,21 @@ import { Room } from '../type'
 export interface Post {
   id: string
   body: string
+  createdBy: string
   createdAt: {}
 }
 
 export interface S {
   posts: Post[]
-  createdPostIds: string[]
 }
 
 export interface G {
   posts: Post[]
-  createdPostIds: string[]
   findIncludeBody: (body: string) => Post[]
 }
 export interface RG {
   'rooms/posts/posts': G['posts']
-  'rooms/posts/createdPostIds': G['createdPostIds']
   'rooms/posts/findIncludeBody': G['findIncludeBody']
-}
-
-export interface M {
-  addCreatedPostIds: { post: Post }
-}
-export interface RM {
-  'rooms/addCreatedPostIds': M['addCreatedPostIds']
 }
 
 export interface A {

@@ -45,6 +45,13 @@ export default Vue.extend({
       const app = this.$store.$exStore.getters['app/settings']
       return app.title || process.env.APP_TITLE
     }
+  },
+  created() {
+    try {
+      this.$store.$exStore.dispatch('user/setAnonymousUser')
+    } catch (e) {
+      alert(`認証に失敗しました。画面を更新してください。`)
+    }
   }
 })
 </script>

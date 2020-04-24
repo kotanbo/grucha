@@ -2,6 +2,7 @@ export interface Room {
   id: string
   name: string
   comments: string[]
+  createdBy: string
   createdAt: {}
   bookmarked: boolean
 }
@@ -9,7 +10,6 @@ export interface Room {
 export interface S {
   rooms: Room[]
   selectedRoom?: Room
-  createdRoomIds: string[]
   bookmarkedRoomIds: string[]
 }
 
@@ -41,7 +41,6 @@ export interface M {
   deleteRoom: { room: Room }
   setRoom: { room: Room }
   selectRoom: { room: Room }
-  addCreatedRoomIds: { room: Room }
   bookmarkRoom: { room: Room }
   setBookmarkRoomFromBookmarkedRoomIds: {}
 }
@@ -52,7 +51,6 @@ export interface RM {
   'rooms/deleteRoom': M['deleteRoom']
   'rooms/setRoom': M['setRoom']
   'rooms/selectRoom': M['selectRoom']
-  'rooms/addCreatedRoomIds': M['addCreatedRoomIds']
   'rooms/bookmarkRoom': M['bookmarkRoom']
   'rooms/setBookmarkRoomFromBookmarkedRoomIds': M['setBookmarkRoomFromBookmarkedRoomIds']
 }

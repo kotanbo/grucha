@@ -6,10 +6,15 @@
 
 Nuxt.js + Vuex + VuexFire + TypeScript + Firestore
 
+## Requirement
+
+- Firestore
+- Firebase anonymous authentication
+
 ## Build Setup
 
 ```bash
-# set Firestore settings
+# set Firebase settings
 $ vi nuxt.config.js
 
 # install dependencies
@@ -30,7 +35,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## Demo
 
-https://grucha.netlify.com/
+https://grucha.netlify.app/
 
 ## Licence
 
